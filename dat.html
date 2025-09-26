@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ask Eesha Out</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: "Poppins", sans-serif;
+      overflow: hidden;
+    }
+
+    .card-container {
+      position: relative;
+      width: 90%;
+      max-width: 400px;
+      min-height: 350px;
+    }
+
+    .date-card {
+      position: absolute;
+      width: 100%;
+      min-height: 350px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.7s ease, opacity 0.7s ease;
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      background: #fff;
+      padding: 2rem;
+      animation: fadeIn 0.7s ease;
+    }
+
+    .date-card.fly-away {
+      transform: translateY(-150%) rotate(20deg);
+      opacity: 0;
+    }
+
+    h4 {
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 1.5rem;
+      animation: popText 1s ease;
+    }
+
+    @keyframes popText {
+      0% {
+        transform: scale(0.7);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .btn {
+      border-radius: 2rem;
+      padding: 0.6rem 1.8rem;
+      margin: 0.4rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: transform 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.1);
+    }
+
+    .btn-yes {
+      background-color: #ff4d6d;
+      color: white;
+      box-shadow: 0 4px 12px rgba(255, 77, 109, 0.5);
+    }
+
+    .btn-no {
+      background-color: #444;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Hearts floating animation */
+    .heart {
+      position: fixed;
+      font-size: 24px;
+      animation: floatUp 4s linear forwards;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-600px) scale(1.5);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card-container">
+    <div class="date-card">
+      <h4>Hi Pretty faced Eesha, please click on the card to move ahead 💖</h4>
+    </div>
+    <div class="date-card">
+      <h4>Ek packet aapke sath date night pack karwado ✨</h4>
+    </div>
+    <div class="date-card" id="final-choice">
+      <h4>Please say YES!!! 🥰</h4>
+      <div>
+        <button class="btn btn-yes">YES 💕</button>
+        <button class="btn btn-no">NO 🙈</button>
+      </div>
+    </div>
+    <div class="date-card" id="are-you-sure">
+      <h4>Are you sure? 😢</h4>
+      <button class="btn btn-no">NO</button>
+    </div>
+    <div class="date-card" id="its-a-date">
+      <h4>It’s a Date! 🎉💖</h4>
+    </div>
+  </div>
+
+  <script>
+    const cards = document.querySelectorAll(".date-card");
+    let current = 0;
+
+    // Hide all except first
+    cards.forEach((card, i) => {
+      if (i !== 0) card.style.display = "none";
+    });
+
+    // Handle click for normal cards (except choice ones)
+    cards.forEach((card, i) => {
+      if (
+        card.id === "final-choice" ||
+        card.id === "are-you-sure" ||
+        card.id === "its-a-date"
+      )
+        return;
+
+      card.addEventListener("click", () => {
+        card.classList.add("fly-away");
+        setTimeout(() => {
+          card.style.display = "none";
+          current++;
+          if (current < cards.length) {
+            cards[current].style.display = "flex";
+          }
+        }, 700);
+      });
+    });
+
+    // Handle YES / NO buttons
+    const finalChoice = document.getElementById("final-choice");
+    const areYouSure = document.getElementById("are-you-sure");
+    const itsADate = document.getElementById("its-a-date");
+
+    // YES button → It’s a Date
+    finalChoice.querySelector(".btn-yes").addEventListener("click", () => {
+      finalChoice.style.display = "none";
+      itsADate.style.display = "flex";
+      startHearts();
+    });
+
+    // NO button → Are you sure?
+    finalChoice.querySelector(".btn-no").addEventListener("click", () => {
+      finalChoice.style.display = "none";
+      areYouSure.style.display = "flex";
+    });
+
+    // Final NO button → It’s a Date anyway 😎
+    areYouSure.querySelector(".btn-no").addEventListener("click", () => {
+      areYouSure.style.display = "none";
+      itsADate.style.display = "flex";
+      startHearts();
+    });
+
+    // Floating hearts animation
+    function startHearts() {
+      setInterval(() => {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerText = "💖";
+        document.body.appendChild(heart);
+
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.top = "100vh";
+        heart.style.fontSize = Math.random() * 20 + 20 + "px";
+
+        setTimeout(() => {
+          heart.remove();
+        }, 4000);
+      }, 300);
+    }
+  </script>
+</body>
+</html>
